@@ -255,8 +255,13 @@ class EPGProvider:
         self.provider_name = self.__class__.__name__
         self.cfg = cfg
         # httpx Client 생성 (requests.Session 대신)
+        # httpx는 헤더 값으로 None을 허용하지 않으므로 조건부 설정
+        headers = {"User-Agent": UA}
+        if self.referer:  # Referer가 None이 아닐 때만 추가
+            headers["Referer"] = self.referer
+            
         client_kwargs = {
-            "headers": {"User-Agent": UA, "Referer": self.referer},
+            "headers": headers,
             "timeout": 30.0,  # httpx는 timeout 필수
             "follow_redirects": True  # 리다이렉트 자동 처리
         }
