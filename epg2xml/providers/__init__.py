@@ -254,6 +254,9 @@ class EPGProvider:
     def __init__(self, cfg: dict):
         self.provider_name = self.__class__.__name__
         self.cfg = cfg
+        # httpx 로깅 비활성화 (불필요한 HTTP 요청 로그 제거)
+        logging.getLogger("httpx").setLevel(logging.WARNING)
+        
         # httpx Client 생성 (requests.Session 대신)
         # httpx는 헤더 값으로 None을 허용하지 않으므로 조건부 설정
         headers = {"User-Agent": UA}
