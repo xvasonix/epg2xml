@@ -143,16 +143,3 @@ cython_debug/
 *.json
 *.xml
 *.log.*
-
-# Test files
-test_*.py
-test_*.json
-*_test_*
-
-# Reports and guides
-*_보고서.md
-*_가이드.md
-작업_완료_*.md
-
-# Version file (auto-generated)
-epg2xml/_version.py
