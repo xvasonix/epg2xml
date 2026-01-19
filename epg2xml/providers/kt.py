@@ -56,17 +56,48 @@ class KT(EPGProvider):
         for c in CH_CATE:
             params.update({"parent_menu_id": c["id"]})
             soup = BeautifulSoup(self.request(url, method="POST", data=params))
-            raw_channels = [unquote(x.find("span", {"class": "ch"}).text.strip()) for x in soup.select("li > a")]
-            # 몇몇 채널은 (TV로만 제공, 유료채널) 웹에서 막혀있지만 실제로는 데이터가 있을 수 있다.
-            for x in raw_channels:
-                svc_channels.append(
-                    {
-                        "Name": " ".join(x.split()[1:]),
-                        "No": str(x.split()[0]),
-                        "ServiceId": x.split()[0],
+            
+            # 채널 목록에서 채널 정보와 로고 URL 추출
+            for channel_item in soup.select("li > a"):
+                try:
+                    # 채널 번호와 이름 추출
+                    ch_text = unquote(channel_item.find("span", {"class": "ch"}).text.strip())
+                    ch_parts = ch_text.split()
+                    
+                    if len(ch_parts) < 2:
+                        continue
+                    
+                    ch_no = ch_parts[0]
+                    ch_name = " ".join(ch_parts[1:])
+                    
+                    # 채널 로고 URL 추출 (img 태그에서)
+                    icon_url = None
+                    img_tag = channel_item.find("img")
+                    if img_tag and img_tag.get("src"):
+                        icon_url = img_tag["src"]
+                        # 상대 URL을 절대 URL로 변환
+                        if icon_url.startswith("/"):
+                            icon_url = "https://tv.kt.com" + icon_url
+                        elif not icon_url.startswith("http"):
+                            icon_url = "https://tv.kt.com/" + icon_url
+                    
+                    channel_data = {
+                        "Name": ch_name,
+                        "No": str(ch_no),
+                        "ServiceId": ch_no,
                         "Category": c["name"],
                     }
-                )
+                    
+                    # Icon URL이 있으면 추가
+                    if icon_url:
+                        channel_data["Icon_url"] = icon_url
+                    
+                    svc_channels.append(channel_data)
+                    
+                except Exception as e:
+                    log.debug("채널 파싱 중 오류 (무시): %s", e)
+                    continue
+                    
         return svc_channels
 
     @no_endtime
