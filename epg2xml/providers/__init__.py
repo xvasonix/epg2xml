@@ -255,12 +255,16 @@ class EPGProvider:
         self.provider_name = self.__class__.__name__
         self.cfg = cfg
         # httpx Client 생성 (requests.Session 대신)
-        self.sess = httpx.Client(
-            headers={"User-Agent": UA, "Referer": self.referer},
-            proxies=cfg["HTTP_PROXY"] if cfg.get("HTTP_PROXY") else None,
-            timeout=30.0,  # httpx는 timeout 필수
-            follow_redirects=True  # 리다이렉트 자동 처리
-        )
+        client_kwargs = {
+            "headers": {"User-Agent": UA, "Referer": self.referer},
+            "timeout": 30.0,  # httpx는 timeout 필수
+            "follow_redirects": True  # 리다이렉트 자동 처리
+        }
+        # httpx에서는 proxy 파라미터 사용 (proxies가 아님)
+        if http_proxy := cfg.get("HTTP_PROXY"):
+            client_kwargs["proxy"] = http_proxy
+        
+        self.sess = httpx.Client(**client_kwargs)
         if self.title_regex:
             self.title_regex = re.compile(self.title_regex)
         self.request = RateLimiter(tps=self.tps)(self.__request)
