@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 from itertools import islice
 from typing import List
 
-import requests
+import httpx
 
 from epg2xml.providers import EPGProgram, EPGProvider
 
@@ -70,7 +70,7 @@ class TVING(EPGProvider):
             params["pageNo"] = str(_page)
             _data = self.request(url=url, params=params, **kwargs)
             if _data["header"]["status"] != 200:
-                raise requests.exceptions.RequestException
+                raise httpx.RequestError("API request failed")
             _results.extend(_data["body"]["result"])
             if _data["body"]["has_more"] == "Y":
                 _page += 1

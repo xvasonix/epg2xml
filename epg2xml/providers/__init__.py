@@ -14,7 +14,7 @@ from itertools import chain
 from os import PathLike
 from typing import ClassVar, Iterator, List, Literal, Tuple, Union
 
-import requests
+import httpx
 
 from epg2xml import __title__, __version__
 from epg2xml.utils import Element, PrefixLogger, RateLimiter, dump_json
@@ -254,10 +254,13 @@ class EPGProvider:
     def __init__(self, cfg: dict):
         self.provider_name = self.__class__.__name__
         self.cfg = cfg
-        self.sess = requests.Session()
-        self.sess.headers.update({"User-Agent": UA, "Referer": self.referer})
-        if http_proxy := cfg["HTTP_PROXY"]:
-            self.sess.proxies.update({"http": http_proxy, "https": http_proxy})
+        # httpx Client 생성 (requests.Session 대신)
+        self.sess = httpx.Client(
+            headers={"User-Agent": UA, "Referer": self.referer},
+            proxies=cfg["HTTP_PROXY"] if cfg.get("HTTP_PROXY") else None,
+            timeout=30.0,  # httpx는 timeout 필수
+            follow_redirects=True  # 리다이렉트 자동 처리
+        )
         if self.title_regex:
             self.title_regex = re.compile(self.title_regex)
         self.request = RateLimiter(tps=self.tps)(self.__request)
@@ -269,12 +272,15 @@ class EPGProvider:
         ret = ""
         try:
             r = self.sess.request(method=method, url=url, **kwargs)
+            r.raise_for_status()  # httpx는 명시적으로 호출해야 함
             try:
                 ret = r.json()
             except (json.decoder.JSONDecodeError, ValueError):
                 ret = r.text
-        except requests.exceptions.HTTPError as e:
+        except httpx.HTTPStatusError as e:  # requests.exceptions.HTTPError 대신
             log.error("요청 중 에러: %s", e)
+        except httpx.RequestError as e:  # 네트워크 오류
+            log.error("네트워크 오류: %s", e)
         except Exception:
             log.exception("요청 중 예외:")
         return ret
