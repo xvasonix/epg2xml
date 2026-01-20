@@ -161,6 +161,9 @@ pip install "epg2xml[lxml] @ git+https://github.com/epg2xml/epg2xml.git@{tag_bra
   },
   "SPOTV": {
     "MY_CHANNELS": []
+  },
+  "SBS": {
+    "MY_CHANNELS": []
   }
 }
 ```

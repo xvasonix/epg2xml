@@ -91,6 +91,9 @@ class Config:
         "SPOTV": {
             "MY_CHANNELS": [],
         },
+        "SBS": {
+            "MY_CHANNELS": [],
+        },
     }
 
     base_settings = {
