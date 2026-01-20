@@ -37,16 +37,16 @@ class SBS(EPGProvider):
         "S19": "DMB+Radio",  # SBS 고릴라M (구 SBS DMB+Radio)
     }
     
-    # Wavve 채널 로고 URL 매핑 (Google Sheets 출처)
+    # iptv-org 채널 로고 URL 매핑 (고품질 PNG)
     CHANNEL_LOGO_MAP = {
-        "S01": "https://img.pooq.co.kr/BMS/Channelimage30/image/S01.jpg",
-        "S03": "https://img.wavve.com/BMS/Channelimage30/image/S03_Img_20220119180558.jpg",
-        "S04": "https://img.wavve.com/BMS/Channelimage30/image/S04_Img_20220105112535.jpg",
-        "S05": "https://img.wavve.com/BMS/Channelimage30/image/S05_Img_20201209150312.jpg",
-        "S06": "https://img.wavve.com/BMS/Channelimage30/image/S06_Img_20201229154431.jpg",
-        "S07": "https://img.pooq.co.kr/BMS/Channelimage30/image/S07.jpg",
-        "S08": "https://img.pooq.co.kr/BMS/Channelimage30/image/S08.jpg",
-        # S02 (SBS Sports), S11 (SBS Life), S12 (SBS Golf2), S19 (고릴라M)는 로고 정보 없음
+        "S01": "https://i.imgur.com/4LHX71N.png",  # SBS
+        "S02": "https://i.imgur.com/L2SdLkb.png",  # SBS Sports
+        "S03": "https://i.imgur.com/8pINOIM.png",  # SBS Plus
+        "S04": "https://i.imgur.com/sxM1XcA.png",  # SBS funE
+        "S05": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/SBS_Golf_logo_2018.svg/512px-SBS_Golf_logo_2018.svg.png",  # SBS Golf
+        "S06": "https://i.imgur.com/gwA98UT.png",  # SBS Biz
+        "S11": "https://i.imgur.com/JKNSd8s.png",  # SBS Life
+        # S07 (파워FM), S08 (러브FM), S12 (Golf2), S19 (고릴라M)는 로고 정보 없음
     }
     
     def get_svc_channels(self) -> List[dict]:
