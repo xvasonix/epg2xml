@@ -230,11 +230,11 @@ class EPGChannel:
         chel = Element("channel", id=self.id)
         # TODO: something better for display-name?
         chel.append(Element("display-name", self.name))
-        chel.append(Element("display-name", self.src))
+        # chel.append(Element("display-name", self.src))
         if self.no:
             chel.append(Element("display-name", f"{self.no}"))
             chel.append(Element("display-name", f"{self.no} {self.name}"))
-            chel.append(Element("display-name", f"{self.no} {self.src}"))
+            # chel.append(Element("display-name", f"{self.no} {self.src}"))
         if self.icon:
             chel.append(Element("icon", src=self.icon))
         print(chel.tostring(level=1))
