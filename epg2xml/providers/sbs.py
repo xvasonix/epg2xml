@@ -111,7 +111,7 @@ class SBS(EPGProvider):
         try:
             # 빈 문자열이나 None 체크
             if not time_str or not time_str.strip():
-                log.error("빈 시간 문자열: %s", date_str)
+                # log.debug(f"빈 시간 문자열: {date_str} (정상: 종료시간 자동보정)")
                 return None
             
             # 시간 문자열에서 시와 분 분리
@@ -150,6 +150,7 @@ class SBS(EPGProvider):
         
         _epg.stime = self.__parse_time(date_str, start_time_str)
         _epg.etime = self.__parse_time(date_str, end_time_str)
+
         
         # 시작 시간보다 종료 시간이 빠른 경우 (자정 넘김), 종료 시간에 하루 추가
         if _epg.stime and _epg.etime and _epg.etime <= _epg.stime:
